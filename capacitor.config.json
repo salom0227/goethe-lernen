@@ -1,0 +1,8 @@
+{
+  "appId": "uz.goethe.lernen",
+  "appName": "GoetheL",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  }
+}

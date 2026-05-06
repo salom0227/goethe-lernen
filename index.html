@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Goethe Lernen — Nemis So'zlari A1-B1</title>
+  <meta name="description" content="Goethe Institut A1-B1 nemis so'zlarini o'zbek tiliga tarjimasi bilan o'rganing. Flashcard, viktorina va progress kuzatish." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     SPLASH / LOADING SCREEN
+════════════════════════════════════════════ -->
+<div id="splash" class="splash">
+  <div class="splash-logo">
+    <div class="splash-flag">🇩🇪</div>
+    <h1 class="splash-title">Goethe<span>Lernen</span></h1>
+    <p class="splash-sub">A1 · A2 · B1 · Nemis tili</p>
+  </div>
+  <div class="splash-bar-wrap">
+    <div class="splash-bar" id="splashBar"></div>
+  </div>
+  <p class="splash-loading" id="splashText">So'zlar yuklanmoqda…</p>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════════ -->
+<div id="app" class="app hidden">
+
+  <!-- ── BOTTOM NAV ── -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-btn active" data-tab="home" id="navHome" onclick="switchTab('home')">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Bosh</span>
+    </button>
+    <button class="nav-btn" data-tab="flashcard" id="navFlash" onclick="switchTab('flashcard')">
+      <span class="nav-icon">🃏</span>
+      <span class="nav-label">Kartochka</span>
+    </button>
+    <button class="nav-btn" data-tab="quiz" id="navQuiz" onclick="switchTab('quiz')">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-label">Test</span>
+    </button>
+    <button class="nav-btn" data-tab="topics" id="navTopics" onclick="switchTab('topics')">
+      <span class="nav-icon">📁</span>
+      <span class="nav-label">Mavzular</span>
+    </button>
+    <button class="nav-btn" data-tab="words" id="navWords" onclick="switchTab('words')">
+      <span class="nav-icon">📖</span>
+      <span class="nav-label">So'zlar</span>
+    </button>
+    <button class="nav-btn" data-tab="stats" id="navStats" onclick="switchTab('stats')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Natija</span>
+    </button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       TAB: HOME
+  ═══════════════════════════════════════════ -->
+  <div id="tabHome" class="tab-content active">
+    <div class="home-header">
+      <div class="home-greeting" id="homeGreeting">Xush kelibsiz! 👋</div>
+      <h2 class="home-title">Nemis tilini o'rganing</h2>
+      <p class="home-subtitle">Goethe Institut rasmiy so'zlar ro'yxati</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-row">
+      <div class="stat-card glass">
+        <div class="stat-num" id="statTotal">—</div>
+        <div class="stat-lbl">Jami so'z</div>
+      </div>
+      <div class="stat-card glass">
+        <div class="stat-num" id="statLearned">—</div>
+        <div class="stat-lbl">O'rganildi</div>
+      </div>
+      <div class="stat-card glass">
+        <div class="stat-num" id="statStreak">—</div>
+        <div class="stat-lbl">Streak 🔥</div>
+      </div>
+    </div>
+
+    <!-- Level selector -->
+    <div class="section-title">Daraja tanlang</div>
+    <div class="level-cards">
+      <div class="level-card" id="lvlA1" onclick="startLevel('A1')">
+        <div class="lvl-badge badge-a1">A1</div>
+        <div class="lvl-name">Boshlang'ich</div>
+        <div class="lvl-count" id="countA1">— so'z</div>
+        <div class="lvl-progress-bar"><div class="lvl-fill fill-a1" id="fillA1"></div></div>
+      </div>
+      <div class="level-card" id="lvlA2" onclick="startLevel('A2')">
+        <div class="lvl-badge badge-a2">A2</div>
+        <div class="lvl-name">Elementar</div>
+        <div class="lvl-count" id="countA2">— so'z</div>
+        <div class="lvl-progress-bar"><div class="lvl-fill fill-a2" id="fillA2"></div></div>
+      </div>
+      <div class="level-card" id="lvlB1" onclick="startLevel('B1')">
+        <div class="lvl-badge badge-b1">B1</div>
+        <div class="lvl-name">O'rta</div>
+        <div class="lvl-count" id="countB1">— so'z</div>
+        <div class="lvl-progress-bar"><div class="lvl-fill fill-b1" id="fillB1"></div></div>
+      </div>
+      <div class="level-card" id="lvlAll" onclick="startLevel('ALL')">
+        <div class="lvl-badge badge-all">A-B</div>
+        <div class="lvl-name">Barchasi</div>
+        <div class="lvl-count" id="countAll">— so'z</div>
+        <div class="lvl-progress-bar"><div class="lvl-fill fill-all" id="fillAll"></div></div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-title">Tezkor boshlash</div>
+    <div class="quick-actions">
+      <button class="qa-btn" onclick="quickFlashcard()">
+        <span class="qa-icon">🃏</span>
+        <span>Flashcard</span>
+      </button>
+      <button class="qa-btn" onclick="quickQuiz()">
+        <span class="qa-icon">🎯</span>
+        <span>Test</span>
+      </button>
+      <button class="qa-btn" onclick="reviewFavorites()">
+        <span class="qa-icon">⭐</span>
+        <span>Saralangan</span>
+      </button>
+      <button class="qa-btn" onclick="reviewUnknown()">
+        <span class="qa-icon">🔄</span>
+        <span>Qayta ko'rish</span>
+      </button>
+    </div>
+
+    <!-- Daily tip -->
+    <div class="tip-card glass" id="dailyTip">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text" id="tipText">Kun so'zi yuklanmoqda…</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB: FLASHCARD
+  ═══════════════════════════════════════════ -->
+  <div id="tabFlashcard" class="tab-content">
+    <div class="fc-header">
+      <div class="fc-top-row">
+        <button class="icon-btn" onclick="switchTab('home')">←</button>
+        <div class="fc-level-badge" id="fcLevelBadge">A1</div>
+        <button class="icon-btn" onclick="toggleFavorite()" id="favBtn">☆</button>
+      </div>
+      <div class="fc-progress-wrap">
+        <div class="fc-progress-bar">
+          <div class="fc-progress-fill" id="fcProgressFill"></div>
+        </div>
+        <span class="fc-progress-text" id="fcProgressText">0 / 0</span>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="fc-scene" onclick="flipCard()" id="fcScene">
+      <div class="fc-card" id="fcCard">
+        <div class="fc-front">
+          <div class="fc-lang-flag">🇩🇪</div>
+          <div class="fc-word" id="fcWord">—</div>
+          <div class="fc-hint">Bosing yoki tap qiling</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-lang-flag">🇺🇿</div>
+          <div class="fc-translation" id="fcTranslation">—</div>
+          <div class="fc-word-small" id="fcWordSmall">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="fc-actions" id="fcActions" style="display:none">
+      <button class="fc-action-btn btn-no" onclick="markCard(false)" id="btnNo">
+        <span>✗</span> Bilmadim
+      </button>
+      <button class="fc-action-btn btn-yes" onclick="markCard(true)" id="btnYes">
+        <span>✓</span> Bildim
+      </button>
+    </div>
+
+    <div class="fc-actions" id="fcFlipHint">
+      <button class="fc-flip-hint-btn" onclick="flipCard()">
+        <span>👆</span> Tarjimani ko'rsatish
+      </button>
+    </div>
+
+    <!-- Session result -->
+    <div id="fcResult" class="fc-result hidden">
+      <div class="result-emoji">🎉</div>
+      <h3 class="result-title">Sessiya tugadi!</h3>
+      <div class="result-stats">
+        <div class="rs-item">
+          <span class="rs-val green" id="rsKnown">0</span>
+          <span class="rs-lbl">Bildim</span>
+        </div>
+        <div class="rs-item">
+          <span class="rs-val red" id="rsUnknown">0</span>
+          <span class="rs-lbl">Bilmadim</span>
+        </div>
+        <div class="rs-item">
+          <span class="rs-val yellow" id="rsAccuracy">0%</span>
+          <span class="rs-lbl">To'g'rilik</span>
+        </div>
+      </div>
+      <div class="result-btns">
+        <button class="rbtn rbtn-outline" onclick="restartFlashcard()">🔄 Qayta</button>
+        <button class="rbtn rbtn-primary" onclick="switchTab('home')">🏠 Bosh sahifa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB: QUIZ
+  ═══════════════════════════════════════════ -->
+  <div id="tabQuiz" class="tab-content">
+    <div class="quiz-header">
+      <div class="quiz-top-row">
+        <button class="icon-btn" onclick="switchTab('home')">←</button>
+        <div class="quiz-level-badge" id="quizLevelBadge">Quiz</div>
+        <div class="quiz-score-badge" id="quizScoreBadge">0 pts</div>
+      </div>
+      <div class="quiz-timer-wrap">
+        <div class="quiz-timer-bar">
+          <div class="quiz-timer-fill" id="quizTimerFill"></div>
+        </div>
+        <span class="quiz-timer-text" id="quizTimerText">15s</span>
+      </div>
+      <div class="quiz-progress-text" id="quizProgressText">Savol 1 / 10</div>
+    </div>
+
+    <!-- Setup Screen -->
+    <div id="quizSetup" class="quiz-setup">
+      <div class="setup-icon">🎯</div>
+      <h3 class="setup-title">Test sozlamalari</h3>
+
+      <div class="setup-group">
+        <label class="setup-label">Daraja</label>
+        <div class="setup-options">
+          <button class="so-btn active" data-level="A1" onclick="setQuizLevel(this,'A1')">A1</button>
+          <button class="so-btn" data-level="A2" onclick="setQuizLevel(this,'A2')">A2</button>
+          <button class="so-btn" data-level="B1" onclick="setQuizLevel(this,'B1')">B1</button>
+          <button class="so-btn" data-level="ALL" onclick="setQuizLevel(this,'ALL')">Barcha</button>
+        </div>
+      </div>
+
+      <div class="setup-group">
+        <label class="setup-label">Savollar soni</label>
+        <div class="setup-options">
+          <button class="so-btn" onclick="setQuizCount(this,10)">10</button>
+          <button class="so-btn active" onclick="setQuizCount(this,20)">20</button>
+          <button class="so-btn" onclick="setQuizCount(this,30)">30</button>
+          <button class="so-btn" onclick="setQuizCount(this,50)">50</button>
+        </div>
+      </div>
+
+      <div class="setup-group">
+        <label class="setup-label">Savol yo'nalishi</label>
+        <div class="setup-options">
+          <button class="so-btn active" onclick="setQuizDir(this,'de-uz')">🇩🇪→🇺🇿</button>
+          <button class="so-btn" onclick="setQuizDir(this,'uz-de')">🇺🇿→🇩🇪</button>
+          <button class="so-btn" onclick="setQuizDir(this,'mixed')">Aralash</button>
+        </div>
+      </div>
+
+      <button class="start-quiz-btn" onclick="startQuiz()">
+        Testni boshlash 🚀
+      </button>
+    </div>
+
+    <!-- Quiz Question -->
+    <div id="quizQuestion" class="quiz-question hidden">
+      <div class="quiz-q-card glass">
+        <div class="quiz-q-lang" id="quizQLang">🇩🇪 Nemischa</div>
+        <div class="quiz-q-word" id="quizQWord">—</div>
+      </div>
+      <div class="quiz-options" id="quizOptions"></div>
+    </div>
+
+    <!-- Quiz Result -->
+    <div id="quizResult" class="quiz-result hidden">
+      <div class="qr-emoji" id="qrEmoji">🏆</div>
+      <h3 class="qr-title" id="qrTitle">Zo'r!</h3>
+      <div class="qr-score" id="qrScore">0 / 0</div>
+      <div class="qr-accuracy" id="qrAccuracy">0%</div>
+      <div class="qr-stats-row">
+        <div class="qrs-item">
+          <span class="qrs-val green" id="qrsCorrect">0</span>
+          <span class="qrs-lbl">To'g'ri</span>
+        </div>
+        <div class="qrs-item">
+          <span class="qrs-val red" id="qrsWrong">0</span>
+          <span class="qrs-lbl">Noto'g'ri</span>
+        </div>
+        <div class="qrs-item">
+          <span class="qrs-val yellow" id="qrsTime">0s</span>
+          <span class="qrs-lbl">Vaqt</span>
+        </div>
+      </div>
+      <div class="result-btns">
+        <button class="rbtn rbtn-outline" onclick="restartQuiz()">🔄 Qayta</button>
+        <button class="rbtn rbtn-primary" onclick="switchTab('home')">🏠 Bosh sahifa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB: TOPICS
+  ═══════════════════════════════════════════ -->
+  <div id="tabTopics" class="tab-content">
+    <div class="words-header">
+      <h3 class="words-title">📁 Mavzular bo'yicha</h3>
+      <p class="home-subtitle">So'zlarni mavzularga bo'lingan holda o'rganing</p>
+    </div>
+    <div class="level-cards" id="topicsContainer">
+      <!-- Generated via JS -->
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB: WORDS LIST
+  ═══════════════════════════════════════════ -->
+  <div id="tabWords" class="tab-content">
+    <div class="words-header">
+      <h3 class="words-title">📖 So'zlar lug'ati</h3>
+      <div class="words-search-wrap">
+        <input type="text" class="words-search" id="wordsSearch" placeholder="So'z qidirish…" oninput="filterWords()" />
+        <span class="search-icon">🔍</span>
+      </div>
+      <div class="words-filters">
+        <button class="wf-btn active" onclick="filterLevel(this,'ALL')">Barcha</button>
+        <button class="wf-btn" onclick="filterLevel(this,'A1')">A1</button>
+        <button class="wf-btn" onclick="filterLevel(this,'A2')">A2</button>
+        <button class="wf-btn" onclick="filterLevel(this,'B1')">B1</button>
+        <button class="wf-btn" onclick="filterLevel(this,'FAV')">⭐ Saralangan</button>
+      </div>
+    </div>
+    <div class="words-list" id="wordsList"></div>
+    <div class="words-load-more" id="wordsLoadMore">
+      <button class="load-more-btn" onclick="loadMoreWords()">Ko'proq ko'rish</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB: STATS
+  ═══════════════════════════════════════════ -->
+  <div id="tabStats" class="tab-content">
+    <div class="stats-header">
+      <h3 class="stats-title">📊 Statistika</h3>
+    </div>
+
+    <div class="stats-overview glass">
+      <div class="so-row">
+        <div class="so-item">
+          <div class="so-num" id="soTotal">0</div>
+          <div class="so-lbl">Jami so'z</div>
+        </div>
+        <div class="so-item">
+          <div class="so-num green" id="soLearned">0</div>
+          <div class="so-lbl">O'rganilgan</div>
+        </div>
+        <div class="so-item">
+          <div class="so-num yellow" id="soFav">0</div>
+          <div class="so-lbl">Saralangan</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress by level -->
+    <div class="section-title">Darajalar bo'yicha</div>
+    <div class="level-progress-cards">
+      <div class="lpc glass">
+        <div class="lpc-header">
+          <span class="lpc-badge badge-a1">A1</span>
+          <span class="lpc-pct" id="lpcA1Pct">0%</span>
+        </div>
+        <div class="lpc-bar"><div class="lpc-fill fill-a1" id="lpcA1Fill"></div></div>
+        <div class="lpc-count" id="lpcA1Count">0 / 0</div>
+      </div>
+      <div class="lpc glass">
+        <div class="lpc-header">
+          <span class="lpc-badge badge-a2">A2</span>
+          <span class="lpc-pct" id="lpcA2Pct">0%</span>
+        </div>
+        <div class="lpc-bar"><div class="lpc-fill fill-a2" id="lpcA2Fill"></div></div>
+        <div class="lpc-count" id="lpcA2Count">0 / 0</div>
+      </div>
+      <div class="lpc glass">
+        <div class="lpc-header">
+          <span class="lpc-badge badge-b1">B1</span>
+          <span class="lpc-pct" id="lpcB1Pct">0%</span>
+        </div>
+        <div class="lpc-bar"><div class="lpc-fill fill-b1" id="lpcB1Fill"></div></div>
+        <div class="lpc-count" id="lpcB1Count">0 / 0</div>
+      </div>
+    </div>
+
+    <!-- Recent quiz results -->
+    <div class="section-title">Oxirgi testlar</div>
+    <div class="recent-quizzes" id="recentQuizzes">
+      <div class="empty-state">Hali test o'tkazilmagan</div>
+    </div>
+
+    <!-- Reset -->
+    <div class="reset-wrap">
+      <button class="reset-btn" onclick="resetProgress()">🗑️ Progressni tozalash</button>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script src="words.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

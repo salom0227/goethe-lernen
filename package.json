@@ -1,0 +1,19 @@
+{
+  "name": "goethe-lernen",
+  "version": "1.0.0",
+  "description": "Goethe Institut A1-B1 Nemis tili so'zlar ilovasi",
+  "main": "app.js",
+  "scripts": {
+    "dev": "npx serve . -p 3000",
+    "build": "echo 'Static app, no build needed'"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
+  },
+  "devDependencies": {},
+  "keywords": ["german", "deutsch", "vocabulary", "goethe", "a1", "a2", "b1"],
+  "author": "GoetheL",
+  "license": "MIT"
+}
