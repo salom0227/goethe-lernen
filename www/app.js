@@ -43,16 +43,21 @@ const TIPS = [
 window.addEventListener('load', async () => {
   loadProgress();
   await loadWords();
-  updateSplash(100, "Tayyor!");
-  setTimeout(() => {
-    document.getElementById('splash').style.opacity = '0';
-    document.getElementById('splash').style.transition = 'opacity 0.5s';
+  
+  if (state.allWords.length > 0) {
+    updateSplash(100, "Tayyor!");
     setTimeout(() => {
-      document.getElementById('splash').classList.add('hidden');
-      document.getElementById('app').classList.remove('hidden');
-      initHome();
-    }, 500);
-  }, 600);
+      document.getElementById('splash').style.opacity = '0';
+      document.getElementById('splash').style.transition = 'opacity 0.5s';
+      setTimeout(() => {
+        document.getElementById('splash').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+        initHome();
+      }, 500);
+    }, 600);
+  } else {
+    updateSplash(100, "Xatolik: So'zlar yuklanmadi!");
+  }
 });
 
 function updateSplash(pct, txt) {
@@ -62,12 +67,26 @@ function updateSplash(pct, txt) {
 
 async function loadWords() {
   updateSplash(30, "So'zlar yuklanmoqda…");
+  
+  // Retry logic if words.js hasn't finished execution
+  let attempts = 0;
+  while (!window.GOETHE_WORDS && attempts < 10) {
+    await new Promise(r => setTimeout(r, 200));
+    attempts++;
+  }
+
   try {
     const data = window.GOETHE_WORDS || [];
     state.allWords = data.filter(w => w.de && w.uz && w.de.length > 0 && w.uz.length > 0);
-    updateSplash(80, `${state.allWords.length} so'z topildi`);
+    
+    if (state.allWords.length === 0) {
+      console.warn("So'zlar topilmadi!");
+      updateSplash(100, "So'zlar yuklanmadi!");
+    } else {
+      updateSplash(80, `${state.allWords.length} so'z tayyor`);
+    }
   } catch(e) {
-    console.error(e);
+    console.error("Load error:", e);
     updateSplash(100, "Xatolik yuz berdi!");
   }
 }
